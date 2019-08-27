@@ -195,3 +195,73 @@ This is like O(N*f(N)) where f(N) is "average worst-case" computational complexi
 
 
 
+Tower Of Hanoi
+You can make a recursive formula for the number of moves that you need to make. 
+
+But first, how my Hanoi works: 
+I have the current Rod from which to move n rings off of onto a target Rod. So imagine from the beginning:
+.
+..
+...     empty    empty
+current          target
+n=3
+So, using recursion, I assume my algorithm works if I send it something like Hanoi(n=2,current,target), then after that call, my end result ought to be
+
+
+                      .
+...       empty       ..
+current   unoccupied  target
+
+But I want to move my ... ring into the target area first, so that i can move everything on top of it. Hence, the idea is, I instead do something like, Hanoi(n=2,current,target=unoccupied).
+
+So now instead, I get 
+
+          .            
+...       ..          empty
+current   unoccupied  target
+
+Then I move the base ... into the target.
+
+          .            
+empty     ..          ...
+current   unoccupied  target
+
+Now I can Hanoi(n=2,current=unoccupied,target), and it should move the two rings at the top of the unoccupied Rod and take it to the target. (The beauty of recursion is when thinking about it, you can assume your algorithm works before it is finished).
+                      .
+                      ..
+empty                 ...
+current   unoccupied  target
+
+To make sure my algorithm really works, there are a couple things left to prove, that no illegal moves happen, because what if actually we started at Hanoi(n=4,current,target) etc etc. But it is usually easy to see and beyond the scope of this question (mathematician way of saying I'm lazy IDK how to show it quickly).
+
+Anyways now that we know how it works, we can easily see that when doing Hanoi(3,current,target), we did 3 things,
+
+Hanoi(n=2,current,target=unoccupied)
+Move base
+Hanoi(n=2,current=unoccupied,target)
+
+So let T_n be the number of moves it takes to solve Tower of Hanoi with n rings. Then from what I said previously,
+Then T_n= T_(n-1)      <--Hanoi(n-1,current,target=unoccupied)
+          + 1          <--Move base
+          + T_(n-1)    <--Hanoi(n-1,current=unoccupied,target)
+Or simply,
+T_n=2*T_(n-1) +1
+and we know T_1, takes 1 move (technically more for the computer but it is just a constant factor in the end)
+It takes some more math to solve this, but quickly, we can check that the formula T_n=2^(n)-1, satisfies this recurrence.
+
+So it make runtime of this algorithm should be at least O(2^n), where n is the number of rings.
+
+
+
+
+finding way out of maze.
+Each recursive calls 3 versions of itself. Each level,k, should have something like 3^k nodes. And we know 4^0+4^1+...+4^k = [4^(k+1)-1]/(4-1) = O(4^k)
+
+So it's definitely at least something like O(4^(f(N,M))), where N,M are the number of rows and cols respectively.
+
+finding all ways out of maze
+^ same as above, but doesn't even have the lucky quick solution.
+
+
+anagram/perms, so it is at least 
+O(n!/(k_1!k_2!k_3!...k_l!)), where n is the number of distinct letters, and k1,k2,...,k_l are the counts of each repeated letter, since that's exactly how many results there should be. My recursion does perform at O(n^2*n!/(k_1!k_2!k_3!...k_l!)), because I have n!/(k_1!k_2!k_3!...k_l!) end leaves and they all end at the same height (height of the string). So the amount of nodes I traverse is bound by (height of tree)*(width of my largest level which is my leaves level) so I get n * n!/(k_1!k_2!k_3!...k_l!), is the most number of times
